@@ -6,10 +6,10 @@ Vagrant.configure("2") do |config|
 
   config.vm.box = "ubuntu/jammy64"
 
-  # config.vm.provision "ansible_local" do |ansible|
-  #   ansible.verbose = "v"
-  #   ansible.playbook = "provisioning/playbook.yml"
-  # end
+  config.vm.provision "ansible_local" do |ansible|
+    ansible.verbose = "v"
+    ansible.playbook = "provisioning/playbook.yml"
+  end
   
   config.vm.provider "virtualbox" do |vb|
     vb.memory = "768"
