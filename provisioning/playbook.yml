@@ -1,0 +1,73 @@
+---
+- name: "Ansible new development environment playbook"
+  hosts: all
+  tasks:
+    - name: Install required apt packages
+      apt:
+        pkg:
+          - flatpak
+          - openjdk-11-jdk
+          - shellcheck
+          - dotnet-sdk-6.0
+          - virtualbox
+          - virtualbox-guest-utils
+          - virtualbox-guest-additions-iso
+        state: latest
+        update_cache: true
+      become: true
+
+    - name: Add the flathub flatpak repository remote to the user installation
+      community.general.flatpak_remote:
+        name: flathub
+        state: present
+        flatpakrepo_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+        method: user
+
+
+    - name: Install flathub packages
+      community.general.flatpak:
+        name:
+          - io.gitlab.librewolf-community
+          - org.libreoffice.LibreOffice
+          - com.google.Chrome
+          - org.mozilla.firefox
+          - com.brave.Browser
+          - com.sublimemerge.App
+          - org.gimp.GIMP
+          - org.chromium.Chromium
+          - com.opera.Opera
+          - com.getpostman.Postman
+          - org.videolan.VLC
+          - org.kde.okular
+          - com.github.tchx84.Flatseal
+          - org.mozilla.Thunderbird
+          - io.dbeaver.DBeaverCommunity
+          - org.keepassxc.KeePassXC
+        state: present
+        method: user
+
+    - name: Add an VSCodium apt signing key
+      apt_key:
+        url: https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg
+        state: present
+        keyring: /usr/share/keyrings/vscodium-archive-keyring.gpg
+      become: true
+
+    - name: add docker repository to apt
+      apt_repository:
+        repo: deb [ signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg ] https://download.vscodium.com/debs vscodium main
+        state: present
+      become: true
+
+    - name: Install VSCodium
+      apt:
+        pkg:
+          - codium
+        state: latest
+        update_cache: true
+      become: true
+
+    - name: Setup VSCodium extensions
+      script: "./scripts/vscodium-extensions-install.sh"
+      args:
+        creates: "/tmp/installed-vscodium-extensions"
