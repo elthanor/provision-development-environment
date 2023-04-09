@@ -1,6 +1,6 @@
 ---
 - name: "Ansible new development environment playbook"
-  hosts: all
+  hosts: newdevenv
   tasks:
     - name: Install required apt packages
       apt:

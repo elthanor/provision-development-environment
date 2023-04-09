@@ -1,9 +1,10 @@
 newdevenv:
   hosts:
-    - 127.0.0.1
+    local:
+      ansible_host: 127.0.0.1
   vars:
-    ansible_user: INSERTNEWUSERHERE
-    ansible_connection: localhost
+    ansible_user: v
+    ansible_connection: local
 
 # hosts: 127.0.0.1
 #   connection: local
